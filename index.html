@@ -79,9 +79,7 @@
 
             const cors_url = 'https://cors-anywhere.herokuapp.com/';
 
-            return fetch(cors_url + _url, {
-                mode: 'no-cors', // 隱藏錯誤訊息
-            }).then(response => {
+            return fetch(cors_url + _url).then(response => {
                 if (response.ok) {
                     response.json().then(json => {
                         id("jsonData").value = JSON.stringify(json);
