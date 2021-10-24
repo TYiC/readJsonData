@@ -74,7 +74,7 @@
 
         // fetch 請求讀取資料
         function getJSONData(_url) {
-            id("showURLText").innerHTML = "輸入網址：" + _url;
+            id("showURLText").innerHTML = _url;
 
             return fetch(_url).then(response => {
                 if (response.ok) {
