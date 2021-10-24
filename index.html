@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Json Data Test</title>
+
+    <style>
+        h1 {
+            font-size: 36px;
+        }
+
+        input,
+        p {
+            font-size: 24px;
+        }
+
+        #urlText {
+            width: 60%;
+        }
+
+        input[type="reset"] {
+            visibility: hidden;
+        }
+
+        textarea {
+            width: 80%;
+            font-size: 24px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>讀取 JSON 資料測試</h1>
+    <p>請輸入 JSON 網址，按下開始測試，偵測讀取 JSON 資料。</p>
+    <p>JSON 網址：
+        <input type="text" name=t1" id="urlText">
+        <input type="button" id="butStart" value="開始測試" onclick="startTest()">
+        <input type="reset" id="butReset" value="重新測試" onclick="resetTest()">
+    </p>
+    <p>輸入網址：<span id="showURLText"></span></p>
+    <p>錯誤訊息：<span id="errorMessage"></span></p>
+
+    <p>讀取資料：<br><textarea id="jsonData" name="jsonData" rows="16"></textarea></p>
+
+
+    <script>
+
+        function id(_id) {
+            return document.getElementById(_id);
+        }
+
+        // 開始測試 點擊事件
+        function startTest() {
+            var urlText = id("urlText").value;
+
+            id("butReset").style.visibility = "visible";
+
+            getJSONData(urlText);
+            useAjaxGetJSONData(urlText)
+        }
+
+        // 重新測試 點擊事件
+        function resetTest() {
+            id("showURLText").innerHTML = "";
+            id("jsonData").value = "";
+            id("errorMessage").innerHTML = "";
+            id("butReset").style.visibility = "hidden";
+        }
+
+        // fetch 請求讀取資料
+        function getJSONData(_url) {
+            id("showURLText").innerHTML = "輸入網址：" + _url;
+
+            return fetch(_url).then(response => {
+                if (response.ok) {
+                    response.json().then(json => {
+                        id("jsonData").value = JSON.stringify(json);
+                    });
+                }
+            }).catch(error => {
+                id("jsonData").value = "讀取失敗";
+                id("errorMessage").innerHTML = error;
+
+            });
+        }
+
+        // Ajax 請求讀取資料
+        function useAjaxGetJSONData(_url) {
+            var request = new XMLHttpRequest();
+            request.open('get', _url);
+            request.onload = function () {
+                var jsonData = request.response;
+                console.log(JSON.stringify(jsonData));
+            }
+            request.send();
+        }
+
+    </script>
+
+
+</body>
+
+</html>
