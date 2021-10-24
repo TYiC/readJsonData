@@ -76,7 +76,9 @@
         function getJSONData(_url) {
             id("showURLText").innerHTML = _url;
 
-            return fetch(_url).then(response => {
+            const cors_url = 'https://cors-anywhere.herokuapp.com/';
+
+            return fetch(cors_url + _url).then(response => {
                 if (response.ok) {
                     response.json().then(json => {
                         id("jsonData").value = JSON.stringify(json);
