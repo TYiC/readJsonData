@@ -91,7 +91,7 @@
             if (id("jsonData").value == "") {
                 id("errorMessage").value += "\n連接網址：" + _url.replace(cors_url, "") + "\n";
 
-                if (_info.status != 200) { id("errorMessage").value += "\n連接失敗"; }
+                if (_info.status != 200) { id("errorMessage").value += "\n連接失敗" }
 
                 id("errorMessage").value += "\n連接結果：";
 
@@ -103,12 +103,9 @@
                     default: id("errorMessage").value += "其他問題有待釐清"; break;
                 }
 
-                id("errorMessage").value += "\nstatus：" + _info.status;
-                id("errorMessage").value += "\nstatusText：" + _info.statusText;
-
-                if (_info.status == 200) { id("errorMessage").value += "\n已更新讀取資料"; }
-
-                id("errorMessage").value += "\n\n";
+                id("errorMessage").value += "\nstatus：" + _info.status
+                    + "\nstatusText：" + _info.statusText
+                    + "\n\n";
             }
         }
     </script>
