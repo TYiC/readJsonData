@@ -5,16 +5,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Json Data Test_v2021.10.24</title>
+    <title>Get Json Data Test_v2021.10.25</title>
 
     <style>
         h1 {
-            font-size: 36px;
+            font-size: 32px;
         }
 
         input,
         p {
-            font-size: 24px;
+            font-size: 18px;
+        }
+
+        div>p {
+            width: 50%;
+            float: left;
         }
 
         #urlText {
@@ -26,8 +31,7 @@
         }
 
         textarea {
-            width: 80%;
-            font-size: 24px;
+            width: 100%;
         }
     </style>
 
@@ -36,68 +40,77 @@
 <body>
 
     <h1>讀取 JSON 資料測試</h1>
-    <p>測試者：蔡佾橙，更新日期：2021-10-24</p>
-    <p>請輸入 JSON 網址，按下開始測試，偵測讀取 JSON 資料。</p>
-    <p>JSON 網址：
+    <p>測試人員：蔡佾橙，更新日期：2021-10-25</p>
+    <p>測試說明：請輸入 JSON 網址，按下開始測試，偵測讀取 JSON 資料。</p>
+    <p>JSON網址：
         <input type="text" name=t1" id="urlText">
         <input type="button" id="butStart" value="開始測試" onclick="startTest()">
         <input type="reset" id="butReset" value="重新測試" onclick="resetTest()">
     </p>
-    <p>輸入網址：<span id="showURLText"></span></p>
-    <p>錯誤訊息：<span id="errorMessage"></span></p>
-    <p>讀取資料：<br><textarea id="jsonData" name="jsonData" rows="16"></textarea></p>
-
+    <div>
+        <p>連線訊息：<br><textarea id="errorMessage" name="errorMessage" rows="30"></textarea></p>
+        <p>讀取資料：<br><textarea id="jsonData" name="jsonData" rows="30"></textarea></p>
+    </div>
     <script>
+        const cors_url = 'https://cors-anywhere.herokuapp.com/';
 
-        function id(_id) {
-            return document.getElementById(_id);
-        }
+        function id(_id) { return document.getElementById(_id); }
 
         // 開始測試 點擊事件
         function startTest() {
             var urlText = id("urlText").value;
 
             id("butReset").style.visibility = "visible";
+            id("jsonData").value = "";
 
             getJSONData(urlText);
-            // useAjaxGetJSONData(urlText)
+
+            if (id("jsonData").value == "") { getJSONData(cors_url + urlText); }
+
+            id("errorMessage").scrollTop = id("errorMessage").scrollHeight;
+            id("urlText").value = "";
         }
 
         // 重新測試 點擊事件
-        function resetTest() {
-            window.location.reload();
-        }
+        function resetTest() { window.location.reload(); }
 
         // fetch 請求讀取資料
         function getJSONData(_url) {
-            id("showURLText").innerHTML = _url;
-
-            const cors_url = 'https://cors-anywhere.herokuapp.com/';
-
-            return fetch(cors_url + _url).then(response => {
+            fetch(_url).then(response => {
                 if (response.ok) {
                     response.json().then(json => {
-                        id("jsonData").value = JSON.stringify(json);
+                        id("jsonData").value = JSON.stringify(json, null, 2);
                     });
+                    connectMessage(response, _url);
+                } else { connectMessage(response, _url); }
+            }).catch(error => { connectMessage(response, _url); });
+        }
+
+        // 偵測連線訊息
+        function connectMessage(_info, _url) {
+            if (id("jsonData").value == "") {
+                id("errorMessage").value += "\n連接網址：" + _url.replace(cors_url, "") + "\n";
+
+                if (_info.status != 200) { id("errorMessage").value += "\n連接失敗"; }
+
+                id("errorMessage").value += "\n連接結果：";
+
+                switch (_info.status) {
+                    case 200: id("errorMessage").value += "伺服器連線成功"; break;
+                    case 403: id("errorMessage").value += "禁止訪問網站請求失敗、檔案過大無法讀取或讀取網址錯誤"; break;
+                    case 404: id("errorMessage").value += "伺服器上找不到檔案或其他"; break;
+                    case 409: id("errorMessage").value += "請求回應與伺服器衝突"; break;
+                    default: id("errorMessage").value += "其他問題有待釐清"; break;
                 }
-            }).catch(error => {
-                id("jsonData").value = "讀取失敗";
-                id("errorMessage").innerHTML = error;
 
-            });
-        }
+                id("errorMessage").value += "\nstatus：" + _info.status;
+                id("errorMessage").value += "\nstatusText：" + _info.statusText;
 
-        // Ajax 請求讀取資料
-        function useAjaxGetJSONData(_url) {
-            var request = new XMLHttpRequest();
-            request.open('get', _url);
-            request.onload = function () {
-                var jsonData = request.response;
-                console.log(JSON.stringify(jsonData));
+                if (_info.status == 200) { id("errorMessage").value += "\n已更新讀取資料"; }
+
+                id("errorMessage").value += "\n\n";
             }
-            request.send();
         }
-
     </script>
 
 
