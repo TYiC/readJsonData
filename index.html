@@ -63,9 +63,9 @@
             id("butReset").style.visibility = "visible";
             id("jsonData").value = "";
 
-            getJSONData(urlText);
+            getJSONData(urlText.replace(/\s+/g, ''));
 
-            if (id("jsonData").value == "") { getJSONData(cors_url + urlText); }
+            if (id("jsonData").value == "") { getJSONData(cors_url + urlText.replace(/\s+/g, '')); }
 
             id("errorMessage").scrollTop = id("errorMessage").scrollHeight;
             id("urlText").value = "";
